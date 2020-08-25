@@ -1,0 +1,11 @@
+## Interface: 90001
+## Title: Informed Tooltips
+## Notesccc: More informative and detailed Tooltips
+## Author: Exxcar
+## Version: 0.1
+
+ITT.lua
+lib/utils.lua
+lib/textparsers.lua
+constants.lua
+core.lua
