@@ -15,6 +15,11 @@ ITT.player.scales.versatilityIn = 0;
 ITT.player.scales.versatilityOut = 0;
 
 ITT.player.stats = {}
+ITT.player.stats.crit = 0;
+ITT.player.stats.haste = 0;
+ITT.player.stats.mastery = 0;
+ITT.player.stats.versatilityIn = 0;
+ITT.player.stats.versatilityOut = 0;
 
 --Item Storage
 ITT.item = {}

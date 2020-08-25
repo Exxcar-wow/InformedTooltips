@@ -1,45 +1,38 @@
-local currentCrit = 0;
-local currentHaste = 0;
-local currentVerseIn = 0;
-local currentVerseOut = 0;
-local currentMastery = 0;
-local mastery = 0;
-
 local MastCE = 0;
 
 local function updateScales()
-    currentCrit = GetCombatRating(CRIT);
-    if (currentCrit ~= 0) then
-        ITT.player.scales.crit = GetCombatRatingBonus(CRIT) / currentCrit;
+    ITT.player.stats.crit = GetCombatRating(CRIT);
+    if (ITT.player.stats.crit ~= 0) then
+        ITT.player.scales.crit = GetCombatRatingBonus(CRIT) / ITT.player.stats.crit;
     else 
         ITT.player.scales.crit = 0.02874320913;
     end
 
-    currentHaste = GetCombatRating(HASTE);
-    if (currentHaste ~= 0) then
-        ITT.player.scales.haste = GetCombatRatingBonus(HASTE) / currentHaste;
+    ITT.player.stats.haste = GetCombatRating(HASTE);
+    if (ITT.player.stats.haste ~= 0) then
+        ITT.player.scales.haste = GetCombatRatingBonus(HASTE) / ITT.player.stats.haste;
     else
         ITT.player.scales.haste = 0.03029901901;
     end
 
-    currentVerseIn = GetCombatRating(VERSE_IN);
-    if (currentVerseIn ~= 0) then
-        ITT.player.scales.versatilityIn = GetCombatRatingBonus(VERSE_IN) / currentVerseIn;
+    ITT.player.stats.versatilityIn = GetCombatRating(VERSE_IN);
+    if (ITT.player.stats.versatilityIn ~= 0) then
+        ITT.player.scales.versatilityIn = GetCombatRatingBonus(VERSE_IN) / ITT.player.stats.versatilityIn;
     else
         ITT.player.scales.versatilityIn = 0.01252119530;
     end
 
-    currentVerseOut = GetCombatRating(VERSE_OUT)
-    if (currentVerseOut ~= 0) then
-        ITT.player.scales.versatilityOut = GetCombatRatingBonus(VERSE_OUT) / currentVerseOut;
+    ITT.player.stats.versatilityOut = GetCombatRating(VERSE_OUT)
+    if (ITT.player.stats.versatilityOut ~= 0) then
+        ITT.player.scales.versatilityOut = GetCombatRatingBonus(VERSE_OUT) / ITT.player.stats.versatilityOut;
     else
         ITT.player.scales.versatilityOut = 0.02505618334;
     end
 
-    currentMastery = GetCombatRating(MASTERY)
-    mastery, MastCE = GetMasteryEffect();
-    if (currentMastery ~= 0) then
-        ITT.player.scales.mastery = GetCombatRatingBonus(MASTERY) / currentMastery;
+    ITT.player.stats.mastery = GetCombatRating(MASTERY)
+    _, MastCE = GetMasteryEffect();
+    if (ITT.player.stats.mastery ~= 0) then
+        ITT.player.scales.mastery = GetCombatRatingBonus(MASTERY) / ITT.player.stats.mastery;
     else
         ITT.player.scales.mastery = 0.0285714284979592;
     end
