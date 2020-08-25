@@ -121,4 +121,4 @@ ItemRefTooltip:HookScript("OnTooltipSetItem", updateTooltip);
 ShoppingTooltip1:HookScript("OnTooltipSetItem", updateTooltip);
 ShoppingTooltip2:HookScript("OnTooltipSetItem", updateTooltip);
 
-print("Informed Tooltips loaded!")
+print("Informed Tooltips loaded.")
