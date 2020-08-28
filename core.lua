@@ -1,5 +1,3 @@
-local MastCE = 0;
-
 local function updateScales()
     ITT.player.stats.crit = GetCombatRating(CRIT);
     if (ITT.player.stats.crit ~= 0) then
@@ -30,7 +28,7 @@ local function updateScales()
     end
 
     ITT.player.stats.mastery = GetCombatRating(MASTERY)
-    _, MastCE = GetMasteryEffect();
+    _, ITT.player.scales.masteryCoeffecient = GetMasteryEffect();
     if (ITT.player.stats.mastery ~= 0) then
         ITT.player.scales.mastery = GetCombatRatingBonus(MASTERY) / ITT.player.stats.mastery;
     else
@@ -51,12 +49,11 @@ local function updateTooltip(self)
     local itemID, itemType, itemSubType, itemEquipLoc, icon, itemClassID, itemSubClassID = GetItemInfoInstant(itemLink);
 
     if(itemType ~= "Armor" and itemType ~= "Weapon") then
-        if (ITT.debug) then print("Skipping " .. itemType .. "(" .. itemType .. ")") end
+        if (ITT.debug) then print("Skipping " .. name .. "(" .. itemType .. ")") end
         return;
     end
 
     local stats = {};
-    local class = 5;
 
     ITT.tooltip.type = self:GetName() .. "TextLeft";
 
@@ -64,10 +61,8 @@ local function updateTooltip(self)
     updateScales();
 
     if(ITT.debug) then
-        printTable(stats)
+        printTable(stats);
     end
-
-    local primaryStat = determineMainStat()
 
     for index,value in pairs(stats) do
         if (index == "ITEM_MOD_CRIT_RATING_SHORT") then
@@ -82,13 +77,13 @@ local function updateTooltip(self)
             ITT.item.percent.versatilityIn = round(value * ITT.player.scales.versatilityIn);
         elseif (index == "ITEM_MOD_MASTERY_RATING_SHORT") then
             itemRawMast = value;
-            itemPerMast = round((value * ITT.player.scales.mastery) * MastCE);
+            itemPerMast = round((value * ITT.player.scales.mastery) * ITT.player.scales.masteryCoeffecient);
         end
     end
 
     for i=1, self:NumLines() do
         local currentIndex = ITT.tooltip.type..i;
-        local line = _G[currentIndex]
+        local line = _G[currentIndex];
         if line:GetText() then
             text = line:GetText()
 
@@ -100,9 +95,23 @@ local function updateTooltip(self)
                 _G[currentIndex]:SetText(parseEquipText(text));
             elseif(string.find(text, "+")) then
                 -- Parse Secondary Stats
-                _G[currentIndex]:SetText(parseSecondaryText(text))
+                _G[currentIndex]:SetText(parseSecondaryText(text));
             end
 		end
+    end
+end
+
+SLASH_ITT1 = '/itt';
+
+function SlashCmdList.ITT(msg, editbox)
+    if msg == 'debug' then
+        if (ITT.debug) then
+            ITT.debug = false
+            print("Debugging messages disabled");
+        else
+            ITT.debug = true
+            print("Debugging messages should be enabled.");
+        end
     end
 end
 
@@ -114,4 +123,4 @@ ItemRefTooltip:HookScript("OnTooltipSetItem", updateTooltip);
 ShoppingTooltip1:HookScript("OnTooltipSetItem", updateTooltip);
 ShoppingTooltip2:HookScript("OnTooltipSetItem", updateTooltip);
 
-print("Informed Tooltips loaded.")
+print("Informed Tooltips loaded.");

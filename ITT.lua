@@ -1,20 +1,21 @@
-ITT = {}
-ITT.debug = false
+ITT = {};
+ITT.debug = false;
 
 --Tooltip Storage
-ITT.tooltip = {}
+ITT.tooltip = {};
 ITT.tooltip.type = "";
 
 --Player Storage
-ITT.player = {}
-ITT.player.scales = {}
+ITT.player = {};
+ITT.player.scales = {};
 ITT.player.scales.crit = 0;
 ITT.player.scales.haste = 0;
 ITT.player.scales.mastery = 0;
 ITT.player.scales.versatilityIn = 0;
-ITT.player.scales.versatilityOut = 0;
+ITT.player.scales.versatilityOt = 0;
+ITT.player.scales.masteryCoeffecient = 0;
 
-ITT.player.stats = {}
+ITT.player.stats = {};
 ITT.player.stats.crit = 0;
 ITT.player.stats.haste = 0;
 ITT.player.stats.mastery = 0;
@@ -22,38 +23,41 @@ ITT.player.stats.versatilityIn = 0;
 ITT.player.stats.versatilityOut = 0;
 
 --Item Storage
-ITT.item = {}
-ITT.item.raw = {}
+ITT.item = {};
+ITT.item.name = "";
+ITT.item.link = "";
+ITT.item.raw = {};
 ITT.item.raw.crit = 0;
 ITT.item.raw.haste = 0;
 ITT.item.raw.mastery = 0;
 ITT.item.raw.versatility = 0;
 
-ITT.item.percent = {}
+ITT.item.percent = {};
 ITT.item.percent.crit = 0;
 ITT.item.percent.haste = 0;
 ITT.item.percent.mastery = 0;
 ITT.item.percent.versatilityIn = 0;
 ITT.item.percent.versatilityOut = 0;
 
-defaultItemStorage = ITT.item
-defaultToolTipStorage = ITT.tooltip
-defaultPlayerStorage = ITT.player
+defaultItemStorage = ITT.item;
+defaultToolTipStorage = ITT.tooltip;
+defaultPlayerStorage = ITT.player;
 
 --ITT Util functions
 ITT.tooltip.clear = function ()
-    ITT.tooltip = defaultToolTipStorage
+    ITT.tooltip = defaultToolTipStorage;
 end
 
 ITT.player.clear = function ()
+    ITT.player = defaultPlayerStorage;
 end
 
 ITT.item.clear = function ()
-    ITT.item = defaultItemStorage
+    ITT.item = defaultItemStorage;
 end
 
 ITT.clearStorage = function ()
-    ITT.tooltip.clear()
-    ITT.player.clear()
-    ITT.item.clear()
+    ITT.tooltip.clear();
+    ITT.player.clear();
+    ITT.item.clear();
 end
