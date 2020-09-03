@@ -27,8 +27,6 @@ function ITT:OnInitialize()
 
     if (self.db.char.debug) then
         self:Print("Debugging messages enabled")
-        self:PrintTable(self.db.char)
-        self:PrintTable(self.db.global)
     else
         self:Print("Debugging messages disabled")
     end
@@ -89,8 +87,6 @@ function ITT:OnDisable()
 end
 
 function ITT:OnTooltipSetItem(tooltip, ...)
-    self:Print("Got a tooltip to process")
-
     local player = Player:new()
     local myItem = ITT_Item:NewFromTooltip(tooltip)
 
@@ -98,12 +94,50 @@ function ITT:OnTooltipSetItem(tooltip, ...)
         return tooltip
     end
 
-    if (self.db.char.debug) then
-        self:PrintTable(player.raw)
-        self:PrintTable(player.scales)
+    if(myItem.stats.raw.crit) then
+        myItem.stats.percent.crit = round(myItem.stats.raw.crit * player.scales.crit)
+    end
+
+    if(myItem.stats.raw.haste) then
+        myItem.stats.percent.haste = round(myItem.stats.raw.haste * player.scales.haste)
+    end
+
+    if(myItem.stats.raw.mastery) then
+        myItem.stats.percent.mastery = round((myItem.stats.raw.mastery * player.scales.mastery) * player.scales.masteryCoeffecient);
+    end
+
+    if(myItem.stats.raw.versatilty) then
+        myItem.stats.percent.versatilityIn = round(myItem.stats.raw.versatilty * player.scales.versatilityIn);
+        myItem.stats.percent.versatilityOut = round(myItem.stats.raw.versatilty * player.scales.versatilityOut);
     end
 
     local tooltipTpye = tooltip:GetName() .. "TextLeft"
+    for i=1, tooltip:NumLines() do
+        local currentIndex = tooltipTpye..i
+        local line = _G[currentIndex]
+
+        if (line:GetText()) then
+            text = line:GetText()
+
+            if(string.find(text, "Enchanted:")) then
+                -- Parse Enchant Text
+                _G[currentIndex]:SetText(Parser:enchantParser(text))
+            elseif(string.find(text, "Equip:")) then
+                -- Parse Equip Effect
+                _G[currentIndex]:SetText(Parser:equipParser(text))
+            elseif(string.find(text, "+")) then
+                -- Parse Secondary Stats
+                _G[currentIndex]:SetText(Parser:secondaryParser(text, myItem.stats.percent))
+            end
+        end
+    end
 
     return tooltip;
+end
+
+
+-- Util Functions
+
+function round(number, decimalPlaces)
+    return tonumber(string.format("%." .. (decimalPlaces or 3) .. "f", number));
 end

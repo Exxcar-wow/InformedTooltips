@@ -10,18 +10,17 @@ ITT_Item = {
     subClassID = 0,
     stats = {
         raw = {
-            crit = 0,
-            haste = 0,
-            versatilityIn = 0,
-            versatilityOut = 0,
-            mastery = 0
+            crit = nil,
+            haste = nil,
+            versatility = nil,
+            mastery = nil
         },
         percent = {
-            crit = 0,
-            haste = 0,
-            versatilityIn = 0,
-            versatilityOut = 0,
-            mastery = 0
+            crit = nil,
+            haste = nil,
+            versatilityIn = nil,
+            versatilityOut = nil,
+            mastery = nil
         },
     }
 }
@@ -65,8 +64,7 @@ function ITT_Item:NewFromTooltip(tooltip)
         elseif (index == "ITEM_MOD_HASTE_RATING_SHORT") then
             self.stats.raw.haste = value;
         elseif (index == "ITEM_MOD_VERSATILITY") then
-            self.stats.raw.versatilityIn = value;
-            self.stats.raw.versatilityOut = value;
+            self.stats.raw.versatility = value;
         elseif (index == "ITEM_MOD_MASTERY_RATING_SHORT") then
             self.stats.raw.master = value;
         end

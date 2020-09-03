@@ -5,6 +5,7 @@ local VERSE_IN = 31;
 local MASTERY = 26;
 
 Player = {
+    primaryStat = "",
     raw = {
         crit = 0,
         haste = 0,
@@ -51,6 +52,17 @@ function Player:new(p)
 
     if (self.raw.mastery ~= 0) then
         self.scales.mastery = GetCombatRatingBonus(MASTERY) / self.raw.mastery;
+    end
+
+    local playerSpec = GetSpecialization()
+    local _, _, _, _, _, _, primaryStat = GetSpecializationInfo(playerSpec)
+
+    if(primaryStat == 1) then
+        self.primaryStat = _G["ITEM_MOD_STRENGTH_SHORT"]
+    elseif(primaryStat == 2) then
+        self.primaryStat = _G["ITEM_MOD_AGILITY_SHORT"]
+    else
+        self.primaryStat = _G["ITEM_MOD_INTELLECT_SHORT"]
     end
     
     return p
