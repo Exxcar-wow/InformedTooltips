@@ -1,126 +1,109 @@
-local function updateScales()
-    ITT.player.stats.crit = GetCombatRating(CRIT);
-    if (ITT.player.stats.crit ~= 0) then
-        ITT.player.scales.crit = GetCombatRatingBonus(CRIT) / ITT.player.stats.crit;
-    else 
-        ITT.player.scales.crit = 0.02874320913;
+local PREFIX = "[ITT]"
+local ADDONNAME = "InformedTooltips"
+local LINEBREAK = "----------------------------"
+local ittVersion = "v0.2"
+
+ITT = LibStub("AceAddon-3.0"):NewAddon(ADDONNAME, "AceConsole-3.0", "AceHook-3.0")
+
+ITT.defaults = {
+    char = {
+        debug = true,
+        enabled = true
+    },
+}
+
+function ITT:PrintTable(myTable, header)
+    header = header or "myTable"
+    self:Print(LINEBREAK, header, LINEBREAK)
+    for index,value in pairs(myTable) do
+        self:Print(index, ": ", value);
+    end
+    self:Print(LINEBREAK, header, "End", LINEBREAK)
+end
+
+function ITT:OnInitialize()
+    self:Print("ITT beginning initialization")
+    self.db = LibStub("AceDB-3.0"):New("ITTDB", self.defaults)
+
+    if (self.db.char.debug) then
+        self:Print("Debugging messages enabled")
+        self:PrintTable(self.db.char)
+        self:PrintTable(self.db.global)
+    else
+        self:Print("Debugging messages disabled")
     end
 
-    ITT.player.stats.haste = GetCombatRating(HASTE);
-    if (ITT.player.stats.haste ~= 0) then
-        ITT.player.scales.haste = GetCombatRatingBonus(HASTE) / ITT.player.stats.haste;
-    else
-        ITT.player.scales.haste = 0.03029901901;
-    end
+    C_ChatInfo.RegisterAddonMessagePrefix(PREFIX)
 
-    ITT.player.stats.versatilityIn = GetCombatRating(VERSE_IN);
-    if (ITT.player.stats.versatilityIn ~= 0) then
-        ITT.player.scales.versatilityIn = GetCombatRatingBonus(VERSE_IN) / ITT.player.stats.versatilityIn;
-    else
-        ITT.player.scales.versatilityIn = 0.01252119530;
-    end
+    -- Register Chat Comands
+    self:RegisterChatCommand("itt", "ChatCommandHandler")
+    self:RegisterChatCommand("rl", function(self)
+        ReloadUI()
+    end)
+    self:Print(ADDONNAME, " Initialized");
 
-    ITT.player.stats.versatilityOut = GetCombatRating(VERSE_OUT)
-    if (ITT.player.stats.versatilityOut ~= 0) then
-        ITT.player.scales.versatilityOut = GetCombatRatingBonus(VERSE_OUT) / ITT.player.stats.versatilityOut;
-    else
-        ITT.player.scales.versatilityOut = 0.02505618334;
-    end
-
-    ITT.player.stats.mastery = GetCombatRating(MASTERY)
-    _, ITT.player.scales.masteryCoeffecient = GetMasteryEffect();
-    if (ITT.player.stats.mastery ~= 0) then
-        ITT.player.scales.mastery = GetCombatRatingBonus(MASTERY) / ITT.player.stats.mastery;
-    else
-        ITT.player.scales.mastery = 0.0285714284979592;
+    if (not self.db.char.enabled) then
+        self:Disable()
     end
 end
 
-local function updateTooltip(self)
-    ITT.clearStorage();
+function ITT:ChatCommandHandler(msg)
+    local command, text = msg:match("(%S+)%s*(%S*)")
+    if (command == "debug") then
+        self.db.char.debug = not self.db.char.debug
 
-    local name, itemLink = self:GetItem();
-
-    if(itemLink == nil) then
-        if (ITT.debug) then print("No item link found for " .. name) end
-        return;
-    end
-
-    local itemID, itemType, itemSubType, itemEquipLoc, icon, itemClassID, itemSubClassID = GetItemInfoInstant(itemLink);
-
-    if(itemType ~= "Armor" and itemType ~= "Weapon") then
-        if (ITT.debug) then print("Skipping " .. name .. "(" .. itemType .. ")") end
-        return;
-    end
-
-    local stats = {};
-
-    ITT.tooltip.type = self:GetName() .. "TextLeft";
-
-    stats = GetItemStats(itemLink);
-    updateScales();
-
-    if(ITT.debug) then
-        printTable(stats);
-    end
-
-    for index,value in pairs(stats) do
-        if (index == "ITEM_MOD_CRIT_RATING_SHORT") then
-            ITT.item.raw.crit = value;
-            ITT.item.percent.crit = round(value * ITT.player.scales.crit);
-        elseif (index == "ITEM_MOD_HASTE_RATING_SHORT") then
-            ITT.item.raw.haste = value;
-            ITT.item.percent.haste = round(value * ITT.player.scales.haste);
-        elseif (index == "ITEM_MOD_VERSATILITY") then
-            ITT.item.raw.versatility = value;
-            ITT.item.percent.versatilityOut = round(value * ITT.player.scales.versatilityOut);
-            ITT.item.percent.versatilityIn = round(value * ITT.player.scales.versatilityIn);
-        elseif (index == "ITEM_MOD_MASTERY_RATING_SHORT") then
-            itemRawMast = value;
-            itemPerMast = round((value * ITT.player.scales.mastery) * ITT.player.scales.masteryCoeffecient);
-        end
-    end
-
-    for i=1, self:NumLines() do
-        local currentIndex = ITT.tooltip.type..i;
-        local line = _G[currentIndex];
-        if line:GetText() then
-            text = line:GetText()
-
-            if(string.find(text, "Enchanted:")) then
-                -- Parse Enchant Text
-                _G[currentIndex]:SetText(parseEnchantText(text));
-            elseif(string.find(text, "Equip:")) then
-                -- Parse Equip Effect
-                _G[currentIndex]:SetText(parseEquipText(text));
-            elseif(string.find(text, "+")) then
-                -- Parse Secondary Stats
-                _G[currentIndex]:SetText(parseSecondaryText(text));
-            end
-		end
-    end
-end
-
-SLASH_ITT1 = '/itt';
-
-function SlashCmdList.ITT(msg, editbox)
-    if msg == 'debug' then
-        if (ITT.debug) then
-            ITT.debug = false
-            print("Debugging messages disabled");
+        if(self.db.char.debug) then
+            self:Print("Debugging messages enabled")
         else
-            ITT.debug = true
-            print("Debugging messages should be enabled.");
+            self:Print("Debugging messages disabled")
         end
+    elseif (command == "toggle") then
+        self.db.char.enabled = not self.db.char.enabled
+
+        if(self.db.char.enabled) then
+            self:Enable()
+        else
+            self:Disable()
+        end
+    elseif (command == "help") then
+        self:Print("/itt toggle : toggles tooltip enhancements")
+        self:Print("/itt debug : toggles debug messages for development")
+    else
+        self:Print("Usage: /itt <command>\n")
+        self:Print("/itt help for a list of commands")
     end
 end
 
+function ITT:OnEnable()
+    self:Print(ADDONNAME, ittVersion ,"enabled");
+    -- Setup Hooks
+    self:HookScript(GameTooltip, "OnTooltipSetItem")
+    self:HookScript(GameTooltip.ItemTooltip.Tooltip, "OnTooltipSetItem")
+    self:HookScript(ItemRefTooltip, "OnTooltipSetItem")
+    self:HookScript(ShoppingTooltip1, "OnTooltipSetItem")
+    self:HookScript(ShoppingTooltip2, "OnTooltipSetItem")
+end
 
---Hooks
-GameTooltip:HookScript("OnTooltipSetItem", updateTooltip);
-GameTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetItem", updateTooltip);
-ItemRefTooltip:HookScript("OnTooltipSetItem", updateTooltip);
-ShoppingTooltip1:HookScript("OnTooltipSetItem", updateTooltip);
-ShoppingTooltip2:HookScript("OnTooltipSetItem", updateTooltip);
+function ITT:OnDisable()
+    self:Print(ADDONNAME,"disabled");
+end
 
-print("Informed Tooltips loaded.");
+function ITT:OnTooltipSetItem(tooltip, ...)
+    self:Print("Got a tooltip to process")
+
+    local player = Player:new()
+    local myItem = ITT_Item:NewFromTooltip(tooltip)
+
+    if(not myItem) then
+        return tooltip
+    end
+
+    if (self.db.char.debug) then
+        self:PrintTable(player.raw)
+        self:PrintTable(player.scales)
+    end
+
+    local tooltipTpye = tooltip:GetName() .. "TextLeft"
+
+    return tooltip;
+end
