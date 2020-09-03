@@ -32,6 +32,7 @@ function Player:new(p)
     self.raw.versatilityIn = GetCombatRating(VERSE_IN)
     self.raw.versatilityOut = GetCombatRating(VERSE_OUT)
     self.raw.mastery = GetCombatRating(MASTERY)
+    
     _, self.scales.masteryCoeffecient = GetMasteryEffect();
 
     if(self.raw.crit > 0 ) then

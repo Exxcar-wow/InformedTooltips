@@ -66,7 +66,7 @@ function ITT_Item:NewFromTooltip(tooltip)
         elseif (index == "ITEM_MOD_VERSATILITY") then
             self.stats.raw.versatility = value;
         elseif (index == "ITEM_MOD_MASTERY_RATING_SHORT") then
-            self.stats.raw.master = value;
+            self.stats.raw.mastery = value;
         end
     end
     if(ITT.db.char.debug) then ITT:PrintTable(self.stats.raw, "Item Raw Stats") end

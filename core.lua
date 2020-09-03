@@ -111,6 +111,8 @@ function ITT:OnTooltipSetItem(tooltip, ...)
         myItem.stats.percent.versatilityOut = round(myItem.stats.raw.versatilty * player.scales.versatilityOut);
     end
 
+    if(ITT.db.char.debug) then ITT:PrintTable(myItem.stats.percent, "Item Percents") end
+
     local tooltipTpye = tooltip:GetName() .. "TextLeft"
     for i=1, tooltip:NumLines() do
         local currentIndex = tooltipTpye..i

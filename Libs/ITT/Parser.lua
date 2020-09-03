@@ -35,7 +35,7 @@ function Parser:secondaryParser(text, percents)
         text = text .. " (" .. tostring(percents.crit) .. "%)";
     elseif(string.find(text, _G["ITEM_MOD_VERSATILITY"])) then
         text = text .. " (" .. tostring(percents.versatilityOut) .. "% / " .. tostring(percents.versatilityIn ) .. "%)";
-    elseif(string.find(text, _G["ITEM_MOD_MASTERY_RATING_SHORT"]) and itemRawMast ~= 0) then
+    elseif(string.find(text, _G["ITEM_MOD_MASTERY_RATING_SHORT"])) then
         text = text .. " (" .. tostring(percents.mastery) .. "%)";
     end
     return text;
