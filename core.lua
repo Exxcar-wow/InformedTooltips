@@ -7,7 +7,7 @@ ITT = LibStub("AceAddon-3.0"):NewAddon(ADDONNAME, "AceConsole-3.0", "AceHook-3.0
 
 ITT.defaults = {
     char = {
-        debug = true,
+        debug = false,
         enabled = true
     },
 }
@@ -106,12 +106,12 @@ function ITT:OnTooltipSetItem(tooltip, ...)
         myItem.stats.percent.mastery = round((myItem.stats.raw.mastery * player.scales.mastery) * player.scales.masteryCoeffecient);
     end
 
-    if(myItem.stats.raw.versatilty) then
-        myItem.stats.percent.versatilityIn = round(myItem.stats.raw.versatilty * player.scales.versatilityIn);
-        myItem.stats.percent.versatilityOut = round(myItem.stats.raw.versatilty * player.scales.versatilityOut);
+    if(myItem.stats.raw.versatility) then
+        myItem.stats.percent.versatilityIn = round(myItem.stats.raw.versatility * player.scales.versatilityIn);
+        myItem.stats.percent.versatilityOut = round(myItem.stats.raw.versatility * player.scales.versatilityOut);
     end
 
-    if(ITT.db.char.debug) then ITT:PrintTable(myItem.stats.percent, "Item Percents") end
+    -- if(ITT.db.char.debug) then ITT:PrintTable(myItem.stats.percent, "Item Percents") end
 
     local tooltipTpye = tooltip:GetName() .. "TextLeft"
     for i=1, tooltip:NumLines() do
@@ -123,7 +123,7 @@ function ITT:OnTooltipSetItem(tooltip, ...)
 
             if(string.find(text, "Enchanted:")) then
                 -- Parse Enchant Text
-                _G[currentIndex]:SetText(Parser:enchantParser(text))
+                _G[currentIndex]:SetText(Parser:enchantParser(text, player))
             elseif(string.find(text, "Equip:")) then
                 -- Parse Equip Effect
                 _G[currentIndex]:SetText(Parser:equipParser(text))

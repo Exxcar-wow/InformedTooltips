@@ -1,5 +1,4 @@
 Parser = {
-    spacing = "\n   ",
     Enchants = {
         ["Celestial Guidance"] = "Chance on hit: +5% PRIMARY STAT",
         ["Eternal Insight"] = "Chance on hit: +20 PRIMARY STAT & Shadow Damage",
@@ -10,10 +9,11 @@ Parser = {
 }
 
 
-function Parser:enchantParser(text)
+function Parser:enchantParser(text, player)
+    if(ITT.db.char.debug) then ITT:Print("Parsing Enchant Text: " .. text) end
     for index,value in pairs(self.Enchants) do
         if(string.find(text, index)) then
-            textFinal = text .. spacing .. string.gsub(value,"PRIMARY STAT",determineMainStat());
+            textFinal = text .. "\n   " .. string.gsub(value,"PRIMARY STAT", player.primaryStat);
             return textFinal;
         end
     end

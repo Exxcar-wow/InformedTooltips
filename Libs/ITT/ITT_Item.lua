@@ -57,6 +57,8 @@ function ITT_Item:NewFromTooltip(tooltip)
     end
 
     local stats = GetItemStats(self.link)
+
+    if(ITT.db.char.debug) then ITT:PrintTable(stats, "Return of GetItemStats") end
     
     for index,value in pairs(stats) do
         if (index == "ITEM_MOD_CRIT_RATING_SHORT") then
@@ -69,6 +71,6 @@ function ITT_Item:NewFromTooltip(tooltip)
             self.stats.raw.mastery = value;
         end
     end
-    if(ITT.db.char.debug) then ITT:PrintTable(self.stats.raw, "Item Raw Stats") end
+    -- if(ITT.db.char.debug) then ITT:PrintTable(self.stats.raw, "Item Raw Stats") end
     return i
 end
