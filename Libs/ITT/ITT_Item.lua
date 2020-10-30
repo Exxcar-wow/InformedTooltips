@@ -22,7 +22,7 @@ ITT_Item = {
             versatilityOut = nil,
             mastery = nil
         },
-    }
+    },
 }
 
 function ITT_Item:new(i)
@@ -33,8 +33,8 @@ function ITT_Item:new(i)
 end
 
 function ITT_Item:NewFromTooltip(tooltip)
-    i = {}
-    setmetatable(i, self)
+    item = {}
+    setmetatable(item, self)
     self.__index = self
     self.name, self.link = tooltip:GetItem()
 
@@ -72,5 +72,5 @@ function ITT_Item:NewFromTooltip(tooltip)
         end
     end
     -- if(ITT.db.char.debug) then ITT:PrintTable(self.stats.raw, "Item Raw Stats") end
-    return i
+    return item
 end

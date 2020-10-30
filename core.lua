@@ -1,6 +1,6 @@
 local PREFIX = "[ITT]"
 local ADDONNAME = "InformedTooltips"
-local LINEBREAK = "----------------------------"
+local LINEBREAK = "----------"
 local ittVersion = "v0.2"
 
 ITT = LibStub("AceAddon-3.0"):NewAddon(ADDONNAME, "AceConsole-3.0", "AceHook-3.0")
@@ -11,6 +11,9 @@ ITT.defaults = {
         enabled = true
     },
 }
+
+ITT.previousID = 0
+ITT.previousTooltip = {}
 
 function ITT:PrintTable(myTable, header)
     header = header or "myTable"
@@ -74,12 +77,32 @@ end
 
 function ITT:OnEnable()
     self:Print(ADDONNAME, ittVersion ,"enabled");
-    -- Setup Hooks
-    self:HookScript(GameTooltip, "OnTooltipSetItem")
-    self:HookScript(GameTooltip.ItemTooltip.Tooltip, "OnTooltipSetItem")
-    self:HookScript(ItemRefTooltip, "OnTooltipSetItem")
-    self:HookScript(ShoppingTooltip1, "OnTooltipSetItem")
-    self:HookScript(ShoppingTooltip2, "OnTooltipSetItem")
+
+    -- Event for mousing over item in Bag
+    self:SecureHook(GameTooltip, "SetBagItem", "OnTooltipSetItem")
+
+    -- Events for merchant buyback pane and normal pane
+    self:SecureHook(GameTooltip, "SetBuybackItem", "OnTooltipSetItem")
+    self:SecureHook(GameTooltip, "SetMerchantItem", "OnTooltipSetItem")
+
+    -- Event for mousing over item in bank OR bag in bag bar
+    self:SecureHook(GameTooltip, "SetInventoryItem", "OnTooltipSetItem")
+
+    -- Event for mousing over item in guild bank
+    self:SecureHook(GameTooltip, "SetGuildBankItem", "OnTooltipSetItem")
+
+    -- Event for mousing over item in recipe page for tradeskill window
+    self:SecureHook(GameTooltip, "SetRecipeResultItem", "OnTooltipSetItem")
+
+    -- Event for mousing over item in loot window
+    self:SecureHook(GameTooltip, "SetLootItem", "OnTooltipSetItem")
+
+    -- Event for clicking on an item link (like in chat)
+    self:SecureHook(ItemRefTooltip, "SetHyperlink", "OnTooltipSetItem")
+
+    -- Events for Quest Dialog and Quest Log
+    self:SecureHook(GameTooltip, "SetQuestItem", "OnTooltipSetItem")
+    self:SecureHook(GameTooltip, "SetQuestLogItem", "OnTooltipSetItem")
 end
 
 function ITT:OnDisable()
@@ -87,12 +110,17 @@ function ITT:OnDisable()
 end
 
 function ITT:OnTooltipSetItem(tooltip, ...)
+    self:Print("Parsing a new item!")
     local player = Player:new()
     local myItem = ITT_Item:NewFromTooltip(tooltip)
 
     if(not myItem) then
         return tooltip
     end
+
+    -- if (myItem.ID == self.previousID) then
+    --     return tooltip
+    -- end
 
     if(myItem.stats.raw.crit) then
         myItem.stats.percent.crit = round(myItem.stats.raw.crit * player.scales.crit)
@@ -133,6 +161,9 @@ function ITT:OnTooltipSetItem(tooltip, ...)
             end
         end
     end
+
+    self.previousID = myItem.ID
+    self.previousTooltip = tooltip
 
     return tooltip;
 end
