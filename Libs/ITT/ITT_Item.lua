@@ -71,8 +71,8 @@ function ITT_Item:NewFromTooltip(tooltip)
         elseif (index == "ITEM_MOD_MASTERY_RATING_SHORT") then
             self.stats.raw.mastery = value;
         elseif (index == "EMPTY_SOCKET_PRISMATIC") then
-            local gem1name, gem1Link = GetItemGem(self.link, 1)
-            ITT:Print("Gem: "..gem1name..", Link: "..gem1Link)
+            -- local gem1name, gem1Link = GetItemGem(self.link, 1)
+            -- ITT:Print("Gem: "..gem1name..", Link: "..gem1Link)
         end
     end
     if(ITT.db.char.debug) then ITT:PrintTable(self.stats.raw, "Item Raw Stats") end
