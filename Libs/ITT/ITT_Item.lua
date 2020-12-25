@@ -14,7 +14,6 @@ ITT_Item = {
             haste = nil,
             versatility = nil,
             mastery = nil,
-            gemStatText = "",
         },
         percent = {
             crit = nil,
@@ -24,6 +23,8 @@ ITT_Item = {
             mastery = nil
         },
     },
+    gemName = '',
+    gemLink = nil,
 }
 
 function ITT_Item:new(i)
@@ -37,6 +38,8 @@ function ITT_Item:NewFromTooltip(tooltip)
     item = {}
     setmetatable(item, self)
     self.__index = self
+    self.gemName = '';
+    self.gemLink = nil;
     self.name, self.link = tooltip:GetItem()
 
     if (self.link == nil) then
@@ -71,10 +74,25 @@ function ITT_Item:NewFromTooltip(tooltip)
         elseif (index == "ITEM_MOD_MASTERY_RATING_SHORT") then
             self.stats.raw.mastery = value;
         elseif (index == "EMPTY_SOCKET_PRISMATIC") then
-            -- local gem1name, gem1Link = GetItemGem(self.link, 1)
-            -- ITT:Print("Gem: "..gem1name..", Link: "..gem1Link)
+            local gem1name, gem1Link = GetItemGem(self.link, 1);
+            if (gem1Link ~= nil) then
+              if(ITT.db.char.debug) then ITT:Print("Gem: "..gem1name..", Link: "..gem1Link); end
+              self.gemName = gem1name;
+              self.gemLink = gem1Link;
+            end
         end
     end
-    if(ITT.db.char.debug) then ITT:PrintTable(self.stats.raw, "Item Raw Stats") end
+
     return item
+end
+
+function ITT_Item:debug ()
+    if (ITT.db.char.debug) then
+       ITT:PrintTable(self.stats.raw, "Item Raw Stats")
+       ITT:PrintTable(self.stats.percent, "Item Percents")
+       if (self.gemLink) then
+            ITT:Print("Item Gem Name: " .. self.gemName )
+            ITT:Print("Item Gem Link: " .. self.gemLink )
+       end
+    end
 end
