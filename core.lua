@@ -1,6 +1,7 @@
 local PREFIX = "[ITT]"
 local ADDONNAME = "InformedTooltips"
 local LINEBREAK = "----------"
+local PARSEBREAK = "|cFFFF0000------------------------------------------------------------"
 local ittVersion = "v0.2"
 
 ITT = LibStub("AceAddon-3.0"):NewAddon(ADDONNAME, "AceConsole-3.0", "AceHook-3.0")
@@ -110,7 +111,7 @@ function ITT:OnDisable()
 end
 
 function ITT:CreateInformedTooltip(tooltip, ...)
-    if(self.db.char.debug) then self:Print("Parsing a new item!") end
+    if(self.db.char.debug) then self:Print(PARSEBREAK) end
     local player = Player:new()
     local myItem = ITT_Item:NewFromTooltip(tooltip)
 
@@ -135,7 +136,7 @@ function ITT:CreateInformedTooltip(tooltip, ...)
         myItem.stats.percent.versatilityOut = round(myItem.stats.raw.versatility * player.scales.versatilityOut);
     end
 
-    if(self.db.char.debug) then ITT:PrintTable(myItem.stats.percent, "Item Percents") end
+    if(self.db.char.debug) then myItem:debug() end
 
     local tooltipTpye = tooltip:GetName() .. "TextLeft"
     for i=1, tooltip:NumLines() do
@@ -161,7 +162,9 @@ function ITT:CreateInformedTooltip(tooltip, ...)
     self.previousID = myItem.ID
     self.previousTooltip = tooltip
 
+    if(self.db.char.debug) then self:Print(PARSEBREAK) end
     return tooltip;
+    
 end
 
 
