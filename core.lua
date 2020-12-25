@@ -79,48 +79,44 @@ function ITT:OnEnable()
     self:Print(ADDONNAME, ittVersion ,"enabled");
 
     -- Event for mousing over item in Bag
-    self:SecureHook(GameTooltip, "SetBagItem", "OnTooltipSetItem")
+    self:SecureHook(GameTooltip, "SetBagItem", "CreateInformedTooltip")
 
     -- Events for merchant buyback pane and normal pane
-    self:SecureHook(GameTooltip, "SetBuybackItem", "OnTooltipSetItem")
-    self:SecureHook(GameTooltip, "SetMerchantItem", "OnTooltipSetItem")
+    self:SecureHook(GameTooltip, "SetBuybackItem", "CreateInformedTooltip")
+    self:SecureHook(GameTooltip, "SetMerchantItem", "CreateInformedTooltip")
 
     -- Event for mousing over item in bank OR bag in bag bar
-    self:SecureHook(GameTooltip, "SetInventoryItem", "OnTooltipSetItem")
+    self:SecureHook(GameTooltip, "SetInventoryItem", "CreateInformedTooltip")
 
     -- Event for mousing over item in guild bank
-    self:SecureHook(GameTooltip, "SetGuildBankItem", "OnTooltipSetItem")
+    self:SecureHook(GameTooltip, "SetGuildBankItem", "CreateInformedTooltip")
 
     -- Event for mousing over item in recipe page for tradeskill window
-    self:SecureHook(GameTooltip, "SetRecipeResultItem", "OnTooltipSetItem")
+    self:SecureHook(GameTooltip, "SetRecipeResultItem", "CreateInformedTooltip")
 
     -- Event for mousing over item in loot window
-    self:SecureHook(GameTooltip, "SetLootItem", "OnTooltipSetItem")
+    self:SecureHook(GameTooltip, "SetLootItem", "CreateInformedTooltip")
 
     -- Event for clicking on an item link (like in chat)
-    self:SecureHook(ItemRefTooltip, "SetHyperlink", "OnTooltipSetItem")
+    self:SecureHook(ItemRefTooltip, "SetHyperlink", "CreateInformedTooltip")
 
     -- Events for Quest Dialog and Quest Log
-    self:SecureHook(GameTooltip, "SetQuestItem", "OnTooltipSetItem")
-    self:SecureHook(GameTooltip, "SetQuestLogItem", "OnTooltipSetItem")
+    self:SecureHook(GameTooltip, "SetQuestItem", "CreateInformedTooltip")
+    self:SecureHook(GameTooltip, "SetQuestLogItem", "CreateInformedTooltip")
 end
 
 function ITT:OnDisable()
     self:Print(ADDONNAME,"disabled");
 end
 
-function ITT:OnTooltipSetItem(tooltip, ...)
-    self:Print("Parsing a new item!")
+function ITT:CreateInformedTooltip(tooltip, ...)
+    if(self.db.char.debug) then self:Print("Parsing a new item!") end
     local player = Player:new()
     local myItem = ITT_Item:NewFromTooltip(tooltip)
 
     if(not myItem) then
         return tooltip
     end
-
-    -- if (myItem.ID == self.previousID) then
-    --     return tooltip
-    -- end
 
     if(myItem.stats.raw.crit) then
         myItem.stats.percent.crit = round(myItem.stats.raw.crit * player.scales.crit)
@@ -139,7 +135,7 @@ function ITT:OnTooltipSetItem(tooltip, ...)
         myItem.stats.percent.versatilityOut = round(myItem.stats.raw.versatility * player.scales.versatilityOut);
     end
 
-    -- if(ITT.db.char.debug) then ITT:PrintTable(myItem.stats.percent, "Item Percents") end
+    if(self.db.char.debug) then ITT:PrintTable(myItem.stats.percent, "Item Percents") end
 
     local tooltipTpye = tooltip:GetName() .. "TextLeft"
     for i=1, tooltip:NumLines() do

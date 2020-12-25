@@ -6,6 +6,9 @@ Parser = {
         ["Shaded Hearthing"] = "Shadowlands Hearthstone CD -5 Minutes",
         ["Shadowlands Gathering"] = "Increased Gathering Speed in Shadowlands"
     },
+    Gems = {
+        ["Deadly Lava Lazuli"] = "+7 Crit"
+    }
 }
 
 
@@ -39,4 +42,8 @@ function Parser:secondaryParser(text, percents)
         text = text .. " (" .. tostring(percents.mastery) .. "%)";
     end
     return text;
+end
+
+function Parser:gemParser(gemName)
+    if(ITT.db.char.debug) then ITT:Print("Working on Gem Text for: " ..gemName) end
 end
