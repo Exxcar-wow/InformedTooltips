@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Informed Tooltips
 ## Notesccc: More informative and detailed Tooltips
 ## Author: Exxcar
