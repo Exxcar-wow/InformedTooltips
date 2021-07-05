@@ -47,3 +47,15 @@ end
 function Parser:gemParser(gemName)
     if(ITT.db.char.debug) then ITT:Print("Working on Gem Text for: " ..gemName) end
 end
+
+function Parser:itemParser(text, parser)
+    local questText, objectiveType, finished, fulfilled, required
+    if(parser == 'razorwing') then
+        questText, objectiveType, finished, fulfilled, required = GetQuestObjectiveInfo(64274, 0, false)
+    elseif(parser == 'mawshroom') then
+        questText, objectiveType, finished, fulfilled, required = GetQuestObjectiveInfo(64376, 0, false)
+    end
+    
+    text = text .. " (" .. tostring(fulfilled) .. " / " .. tostring(required) .. ")";
+    return text;
+end

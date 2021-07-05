@@ -38,10 +38,10 @@ function ITT:OnInitialize()
     C_ChatInfo.RegisterAddonMessagePrefix(PREFIX)
 
     -- Register Chat Comands
-    self:RegisterChatCommand("itt", "ChatCommandHandler")
+    self:RegisterChatCommand("itt", "ChatCommandHandler");
     self:RegisterChatCommand("rl", function(self)
         ReloadUI()
-    end)
+    end);
     self:Print(ADDONNAME, " Initialized");
 
     if (not self.db.char.enabled) then
@@ -146,7 +146,13 @@ function ITT:CreateInformedTooltip(tooltip, ...)
         if (line:GetText()) then
             text = line:GetText()
 
-            if(string.find(text, "Enchanted:")) then
+            if(string.find(text, "Lost Razorwing Egg")) then
+                -- Add Razorwing Progress
+                _G[currentIndex]:SetText(Parser:itemParser(text, 'razorwing'))
+            elseif(string.find(text, "Tasty Mawshroom")) then
+                -- Add Tasty Mawshroom Progreses
+                _G[currentIndex]:SetText(Parser:itemParser(text, 'mawshroom'))
+            elseif(string.find(text, "Enchanted:")) then
                 -- Parse Enchant Text
                 _G[currentIndex]:SetText(Parser:enchantParser(text, player))
             elseif(string.find(text, "Equip:")) then

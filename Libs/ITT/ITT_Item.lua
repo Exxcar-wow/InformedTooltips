@@ -41,6 +41,7 @@ function ITT_Item:NewFromTooltip(tooltip)
     self.gemName = '';
     self.gemLink = nil;
     self.name, self.link = tooltip:GetItem()
+    self.skip = false
 
     if (self.link == nil) then
         if (ITT.db.char.debug) then ITT:Print("No item link found for", self.name) end
@@ -57,6 +58,15 @@ function ITT_Item:NewFromTooltip(tooltip)
 
     if(self.type ~= "Armor" and self.type ~= "Weapon") then
         if(ITT.db.char.debug) then ITT:Print("Skipping" , self.name , "(" , self.type , ")") end
+        self.skip = true
+    end
+
+    if (self.ID == 187054 or self.ID == 187153) then
+        self.skip = false
+    end
+
+
+    if (self.skip == true) then
         return nil;
     end
 
