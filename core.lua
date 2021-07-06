@@ -136,6 +136,9 @@ function ITT:CreateInformedTooltip(tooltip, ...)
         myItem.stats.percent.versatilityOut = round(myItem.stats.raw.versatility * player.scales.versatilityOut);
     end
 
+    local razorName = GetItemInfo(187054)
+    local shroomName = GetItemInfo(187153)
+
     if(self.db.char.debug) then myItem:debug() end
 
     local tooltipTpye = tooltip:GetName() .. "TextLeft"
@@ -146,16 +149,17 @@ function ITT:CreateInformedTooltip(tooltip, ...)
         if (line:GetText()) then
             text = line:GetText()
 
-            if(string.find(text, "Lost Razorwing Egg")) then
+            if(string.find(text, razorName)) then
                 -- Add Razorwing Progress
                 _G[currentIndex]:SetText(Parser:itemParser(text, 'razorwing'))
-            elseif(string.find(text, "Tasty Mawshroom")) then
+            elseif(string.find(text, shroomName)) then
                 -- Add Tasty Mawshroom Progreses
                 _G[currentIndex]:SetText(Parser:itemParser(text, 'mawshroom'))
-            elseif(string.find(text, "Enchanted:")) then
-                -- Parse Enchant Text
-                _G[currentIndex]:SetText(Parser:enchantParser(text, player))
-            elseif(string.find(text, "Equip:")) then
+            -- elseif(string.find(text, _G["ENCHANTED_TOOLTIP_LINE"])) then
+            --     self:Print('ENCHANT!')
+            --     -- Parse Enchant Text
+            --     _G[currentIndex]:SetText(Parser:enchantParser(text, player))
+            elseif(string.find(text, _G["ITEM_SPELL_TRIGGER_ONEQUIP"])) then
                 -- Parse Equip Effect
                 _G[currentIndex]:SetText(Parser:equipParser(text))
             elseif(string.find(text, "+")) then

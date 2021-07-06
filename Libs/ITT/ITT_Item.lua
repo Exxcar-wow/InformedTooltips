@@ -24,7 +24,14 @@ ITT_Item = {
         },
     },
     gemName = '',
+    gemId1 = nil,
+    gemId2 = nil,
     gemLink = nil,
+    color = '',
+    ltype = '',
+    enchant = '',
+    suffix = '',
+    unique = nil
 }
 
 function ITT_Item:new(i)
@@ -56,7 +63,13 @@ function ITT_Item:NewFromTooltip(tooltip)
     self.classID,
     self.subClassID = GetItemInfoInstant(self.link)
 
-    if(self.type ~= "Armor" and self.type ~= "Weapon") then
+    _, _, self.color, self.ltype, _, self.enchant, self.gemId1, self.gemId2, self.gemId3, self.gemId4,
+    self.suffix, self.unique, _, _ = string.find(self.link,
+    "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
+    
+    if(ITT.db.char.debug) then ITT:PrintTable(self, "Full Item Detals") end
+
+    if(self.type ~= _G["ARMOR"] and self.type ~= _G["ENCHSLOT_WEAPON"]) then
         if(ITT.db.char.debug) then ITT:Print("Skipping" , self.name , "(" , self.type , ")") end
         self.skip = true
     end

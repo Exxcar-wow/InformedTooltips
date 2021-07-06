@@ -32,14 +32,18 @@ end
 
 
 function Parser:secondaryParser(text, percents)
-    if(string.find(text, _G["ITEM_MOD_HASTE_RATING_SHORT"])) then
+    if(string.find(text, _G["ITEM_MOD_HASTE_RATING_SHORT"]) and percents.haste ~= nil) then
         text = text .. " (" .. tostring(percents.haste) .. "%)";
-    elseif (string.find(text, _G["ITEM_MOD_CRIT_RATING_SHORT"])) then
+        percents.haste = nil
+    elseif (string.find(text, _G["ITEM_MOD_CRIT_RATING_SHORT"]) and percents.crit ~= nil) then
         text = text .. " (" .. tostring(percents.crit) .. "%)";
-    elseif(string.find(text, _G["ITEM_MOD_VERSATILITY"])) then
+        percents.crit = nil;
+    elseif(string.find(text, _G["ITEM_MOD_VERSATILITY"]) and percents.versatilityOut ~= nil) then
         text = text .. " (" .. tostring(percents.versatilityOut) .. "% / " .. tostring(percents.versatilityIn ) .. "%)";
-    elseif(string.find(text, _G["ITEM_MOD_MASTERY_RATING_SHORT"])) then
+        percents.versatilityOut = nil;
+    elseif(string.find(text, _G["ITEM_MOD_MASTERY_RATING_SHORT"]) and percents.mastery ~= nil) then
         text = text .. " (" .. tostring(percents.mastery) .. "%)";
+        percents.mastery = nil;
     end
     return text;
 end
